@@ -6,11 +6,18 @@ AS		 := gcc
 OBJCOPY	 :=	objcopy
 ODIR	 :=	build
 SDIR	 :=	source
-IDIRS	 :=	-Iinclude
+IDIRS	 :=	-Iinclude -Isource/menyoo_compat
 LDIRS	 :=	-Llib
 CFLAGS	 :=	$(IDIRS) $(LDIRS) -O3 -s -w -std=gnu++11 -fno-builtin -nostartfiles -nostdlib -masm=intel -march=btver2 -mtune=btver2 -m64 -mabi=sysv -mcmodel=large -fpermissive -DTEXT_ADDRESS=$(TEXT) -DDATA_ADDRESS=$(DATA)
 LFLAGS	 :=	-Xlinker -T linker.x -Wl,--build-id=none -Ttext=$(TEXT) -Tdata=$(DATA)
-CFILES	 :=	$(wildcard $(SDIR)/*.cpp)
+CFILES   :=     $(wildcard $(SDIR)/*.cpp) \
+	        $(wildcard $(SDIR)/menyoo_compat/*.cpp) \
+	        $(wildcard $(SDIR)/ui/*.cpp)
+
+ifeq ($(MENUYO_TESTS),1)
+CFILES	 +=	$(wildcard $(SDIR)/tests/*.cpp)
+CFLAGS	 +=	-DMENUYO_TESTS=1
+endif
 SFILES	 :=	$(wildcard $(SDIR)/*.s)
 OBJS	 :=	$(patsubst $(SDIR)/%.cpp, $(ODIR)/%.o, $(CFILES)) $(patsubst $(SDIR)/%.s, $(ODIR)/%.o, $(SFILES))
 
@@ -22,9 +29,11 @@ $(TARGET): $(ODIR) $(OBJS)
 	rm -f temp.t
 
 $(ODIR)/%.o: $(SDIR)/%.cpp
+	@mkdir -p $(dir $@)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 $(ODIR)/%.o: $(SDIR)/%.s
+	@mkdir -p $(dir $@)
 	$(AS) -c -o $@ $< $(SFLAGS)
 
 $(ODIR):

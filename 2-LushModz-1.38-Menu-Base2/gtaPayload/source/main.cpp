@@ -4,6 +4,7 @@
 #include "Enums.h"
 #include "MenuUtils.h"
 #include "Functions.h"
+#include "ui/page_spooner.hpp"
 
 
 
@@ -46,20 +47,22 @@ void Menu(void)
 		addOption("Weapons Options");
 		addOption("Vehicle Spawner");
 		addOption("Vehicle Options");
-		addOption("Teleport Options");
-		addOption("World Options");
-		addOption("Setting Options");
-		switch (GET())
-		{
-			case 1: ChangeMenu(Main_Mods); break;
-			case 2: ChangeMenu(Weapons); break;
-			case 3: ChangeMenu(spawnvehicle); break;
-			 case 4:  if (IS_PED_IN_ANY_VEHICLE(PLAYER_PED_ID(), true)) { ChangeMenu(Vehicle_Options); } else { drawNotification("~y~Must Be In Vehicle To Open Vehicle Options Menu"); }break;
-			case 5: ChangeMenu(Teleport); break;
-			case 6: ChangeMenu(World_Options); break;
-			case 7: ChangeMenu(SettingsOptions); break;
-		}
-		break;
+                addOption("Teleport Options");
+                addOption("World Options");
+                addOption("Setting Options");
+                addOption("Spooner");
+                switch (GET())
+                {
+                        case 1: ChangeMenu(Main_Mods); break;
+                        case 2: ChangeMenu(Weapons); break;
+                        case 3: ChangeMenu(spawnvehicle); break;
+                         case 4:  if (IS_PED_IN_ANY_VEHICLE(PLAYER_PED_ID(), true)) { ChangeMenu(Vehicle_Options); } else { drawNotification("~y~Must Be In Vehicle To Open Vehicle Options Menu"); }break;
+                        case 5: ChangeMenu(Teleport); break;
+                        case 6: ChangeMenu(World_Options); break;
+                        case 7: ChangeMenu(SettingsOptions); break;
+                        case 8: ChangeMenu(Spooner_Menu); break;
+                }
+                break;
 		case Main_Mods:
 		subTitle("Self Options");
 		CheckBox("God Mode", UndetectableGodmode);
@@ -142,18 +145,21 @@ void Menu(void)
 		{
 		}
 		break;
-		case Credits: ///Please Keep Menu Credits!
-		subTitle("Credits Options");
+                case Credits: ///Please Keep Menu Credits!
+                subTitle("Credits Options");
         addOption("~r~ Developer: YOUR NAME~r~");
-		addOption("~b~ Menu Base: Lush Modz ~b~"); //Keep Here
-		addOption("~r~ 1.38: GraFfiX_221211 ~r~"); //Keep Here
-		addOption("~y~ V1.0 ~b~");
-		switch (GET())
-		{
-			case 1: /*MODS*/ break;
-		}
-		break;
-	}
+                addOption("~b~ Menu Base: Lush Modz ~b~"); //Keep Here
+                addOption("~r~ 1.38: GraFfiX_221211 ~r~"); //Keep Here
+                addOption("~y~ V1.0 ~b~");
+                switch (GET())
+                {
+                        case 1: /*MODS*/ break;
+                }
+                break;
+                case Spooner_Menu:
+                menyoo::ui::DrawSpoonerMenu();
+                break;
+        }
 	Setup_System();
 	if (NumMenu != Closed)
 	SetupActions();

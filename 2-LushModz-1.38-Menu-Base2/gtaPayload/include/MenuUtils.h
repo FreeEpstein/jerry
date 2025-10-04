@@ -62,6 +62,8 @@ fastLPress = false,
 
 WhiteColor,
 WhiteColor_toggle;
+
+namespace menyoo { namespace ui { bool HandleSpoonerControls(); } }
 char* CreditText = " ";
 int TextTimer = 0,
 CreditTextTimer = 0,
@@ -99,6 +101,7 @@ enum Subs
 	SettingsOptions,
 	Credits,
 	PopularTP,
+	Spooner_Menu,
 };
 
 int SetGlobal(unsigned int globalId, int value, int wouldRead)
@@ -486,6 +489,10 @@ void SetupButtons()
 	else
 	{
 		SET_PED_CAN_SWITCH_WEAPON(PLAYER_PED_ID(), false);
+		bool spoonerConsumed = false;
+		if (NumMenu == Spooner_Menu) {
+			spoonerConsumed = menyoo::ui::HandleSpoonerControls();
+		}
 		if (IS_DISABLED_CONTROL_JUST_PRESSED(2, INPUT_FRONTEND_CANCEL))
 		{
 			if (NumMenu == Main_Menu)
@@ -512,7 +519,7 @@ void SetupButtons()
 			PressX = true;
 			PLAY_SOUND_FRONTEND(-1, "FLIGHT_SCHOOL_LESSON_PASSED", "HUD_AWARDS", 1.0);
 		}
-		else if (delayed_key_press(INPUT_FRONTEND_UP) == true)
+		else if (!spoonerConsumed && delayed_key_press(INPUT_FRONTEND_UP) == true)
 		{
 			currentOption--;
 			if (currentOption < 1)
@@ -521,7 +528,7 @@ void SetupButtons()
 			}
 			PLAY_SOUND_FRONTEND(-1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1.0);
 		}
-		else if (delayed_key_press(INPUT_FRONTEND_DOWN) == true)
+		else if (!spoonerConsumed && delayed_key_press(INPUT_FRONTEND_DOWN) == true)
 		{
 			currentOption++;
 			if (currentOption > optionCount)
@@ -530,12 +537,12 @@ void SetupButtons()
 			}
 			PLAY_SOUND_FRONTEND(-1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1.0);
 		}
-		else if (delayed_key_press(INPUT_FRONTEND_RIGHT) == true)
+		else if (!spoonerConsumed && delayed_key_press(INPUT_FRONTEND_RIGHT) == true)
 		{
 			rightPress = true;
 			PLAY_SOUND_FRONTEND(-1, "NAV_LEFT_RIGHT", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1.0);
 		}
-		else if (delayed_key_press(INPUT_FRONTEND_LEFT) == true)
+		else if (!spoonerConsumed && delayed_key_press(INPUT_FRONTEND_LEFT) == true)
 		{
 			leftPress = true;
 			PLAY_SOUND_FRONTEND(-1, "NAV_LEFT_RIGHT", "HUD_FRONTEND_DEFAULT_SOUNDSET", 1.0);
