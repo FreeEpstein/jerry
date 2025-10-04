@@ -1,3 +1,7 @@
+#include "menyoo/intent_api.hpp"
+
+extern bool GodModeVehicle1;
+
 char *ItoS(int num)
 {
 	char buf[30];
@@ -101,13 +105,23 @@ int FlyTakeOffDelay = 0;
 
 void Spawncar(char* model)
 {
-	FORCE_REQUEST_MODEL(GET_HASH_KEY(model));
-	if (HAS_MODEL_LOADED(GET_HASH_KEY(model))) {
-	vector3 coord = GET_ENTITY_COORDS(PLAYER_PED_ID(), false);
-	float Head = GET_ENTITY_HEADING(PLAYER_PED_ID());
-	int vehicle = CREATE_VEHICLE(GET_HASH_KEY(model), coord.x, coord.y, coord.z, Head, true, true, 1);
-	SET_PED_INTO_VEHICLE(PLAYER_PED_ID(), vehicle, -1);
-	}
+        vector3 coord = GET_ENTITY_COORDS(PLAYER_PED_ID(), false);
+        float heading = GET_ENTITY_HEADING(PLAYER_PED_ID());
+
+        menyoo::Transform transform{};
+        transform.pos = {coord.x, coord.y, coord.z};
+        transform.rot = {0.0f, 0.0f, heading};
+
+        menyoo::EntityId vehicleId = menyoo::spawn_entity(menyoo::EntityType::Vehicle, GET_HASH_KEY(model), transform);
+        if (vehicleId != 0) {
+                menyoo::set_entity_transform(vehicleId, transform);
+                menyoo::EntityProps props;
+                props.invincible = GodModeVehicle1;
+                props.frozen = GodModeVehicle1;
+                props.alpha = GodModeVehicle1 ? 200 : 255;
+                menyoo::set_entity_props(vehicleId, props);
+                SET_PED_INTO_VEHICLE(PLAYER_PED_ID(), vehicleId, -1);
+        }
 }
 
 void LOOP()
